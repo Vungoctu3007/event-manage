@@ -1,13 +1,10 @@
 services:
   web:
-    image: nginx:latest # Using the default Nginx image with custom configuration.
+    image: nginx:latest
     volumes:
-      # Mount the application code for live updates
       - ./:/var/www
-      # Mount the Nginx configuration file
       - ./docker/development/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
-      # Map port 80 inside the container to the port specified by 'NGINX_PORT' on the host machine
       - "80:80"
     environment:
       - NGINX_HOST=localhost
@@ -15,10 +12,9 @@ services:
       - laravel-development
     depends_on:
       php-fpm:
-        condition: service_started  # Wait for php-fpm to start
+        condition: service_started
 
   php-fpm:
-    # For the php-fpm service, we will create a custom image to install the necessary PHP extensions and setup proper permissions.
     build:
       context: .
       dockerfile: ./docker/common/php-fpm/Dockerfile
@@ -33,20 +29,17 @@ services:
         XDEBUG_LOG: /dev/stdout
         XDEBUG_LOG_LEVEL: 0
     env_file:
-      # Load the environment variables from the Laravel application
       - .env
     user: "${UID:-1000}:${GID:-1000}"
     volumes:
-      # Mount the application code for live updates
       - ./:/var/www
     networks:
       - laravel-development
     depends_on:
-      postgres:
-        condition: service_started  # Wait for postgres to start
+      mysql:
+        condition: service_started
 
   workspace:
-   # For the workspace service, we will also create a custom image to install and setup all the necessary stuff.
     build:
       context: .
       dockerfile: ./docker/development/workspace/Dockerfile
@@ -59,8 +52,8 @@ services:
         XDEBUG_IDE_KEY: ${XDEBUG_IDE_KEY:-DOCKER}
         XDEBUG_LOG: /dev/stdout
         XDEBUG_LOG_LEVEL: 0
-    tty: true  # Enables an interactive terminal
-    stdin_open: true  # Keeps standard input open for 'docker exec'
+    tty: true
+    stdin_open: true
     env_file:
       - .env
     volumes:
@@ -68,18 +61,39 @@ services:
     networks:
       - laravel-development
 
-  postgres:
-    image: postgres:16
+  mysql:
+    image: mysql:8.0
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${MYSQL_PORT:-3306}:3306"
     environment:
-      - POSTGRES_DB=app
-      - POSTGRES_USER=laravel
-      - POSTGRES_PASSWORD=secret
+      - MYSQL_DATABASE=app
+      - MYSQL_USER=laravel
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret
     volumes:
-      - postgres-data-development:/var/lib/postgresql/data
+      - mysql-data-development:/var/lib/mysql
     networks:
       - laravel-development
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - "8080:80"  # Ánh xạ cổng 8080 trên host đến cổng 80 của phpMyAdmin
+    environment:
+      - PMA_HOST=mysql  # Tên dịch vụ MySQL trong cùng mạng
+      - PMA_USER=laravel  # Người dùng MySQL (khớp với MYSQL_USER)
+      - PMA_PASSWORD=secret  # Mật khẩu (khớp với MYSQL_PASSWORD)
+      - PMA_PORT=3306  # Cổng MySQL
+    networks:
+      - laravel-development
+    depends_on:
+      mysql:
+        condition: service_healthy  # Chờ MySQL sẵn sàng
 
   redis:
     image: redis:alpine
@@ -90,4 +104,4 @@ networks:
   laravel-development:
 
 volumes:
-  postgres-data-development:
+  mysql-data-development:
