@@ -17,6 +17,7 @@ return new class extends Migration
             $table->enum('payment_status', ['pending', 'completed', 'failed']);
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->index('user_id');
+            $table->timestamps();
         });
     }
 

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->enum('payment_status', ['successful', 'failed', 'refunded']);
             $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('cascade');
             $table->index('order_id');
+            $table->timestamps();
         });
     }
 

@@ -23,12 +23,16 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $roles = ['attendee', 'organizer', 'admin'];
+
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'full_name' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password_hash' => Hash::make('password'), // mật khẩu mặc định: password
+            'phone_number' => $this->faker->optional()->numerify('09########'),
+            'role' => $this->faker->randomElement($roles),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 
@@ -37,7 +41,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

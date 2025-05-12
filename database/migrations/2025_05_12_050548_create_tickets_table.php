@@ -20,13 +20,14 @@ return new class extends Migration
             $table->timestamp('sale_end')->nullable();
             $table->foreign('event_id')->references('event_id')->on('events')->onDelete('cascade');
             $table->index('event_id');
+            $table->timestamps();
         });
 
+        
         // Add CHECK constraints via raw SQL
         DB::statement('ALTER TABLE tickets ADD CONSTRAINT check_total_quantity_non_negative CHECK (total_quantity >= 0)');
         DB::statement('ALTER TABLE tickets ADD CONSTRAINT check_sold_quantity_non_negative CHECK (sold_quantity >= 0)');
-
-      
+    
     }
 
     public function down()

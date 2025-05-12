@@ -20,13 +20,14 @@ return new class extends Migration
             $table->timestamp('end_time');
             $table->enum('status', ['active', 'cancelled', 'sold_out']);
             $table->text('banner_url')->nullable();
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+
             $table->foreign('organizer_id')->references('organizer_id')->on('organizers')->onDelete('cascade');
             $table->foreign('category_id')->references('category_id')->on('categories')->onDelete('set null');
             $table->foreign('venue_id')->references('venue_id')->on('venues')->onDelete('set null');
             $table->index('title');
             $table->index('venue_id');
             $table->index('category_id');
+            $table->timestamps();
         });
      
     }

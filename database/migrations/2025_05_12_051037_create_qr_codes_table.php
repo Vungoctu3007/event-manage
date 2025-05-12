@@ -15,6 +15,7 @@ return new class extends Migration
             $table->boolean('is_checked_in')->default(false);
             $table->timestamp('checked_in_time')->nullable();
             $table->foreign('order_item_id')->references('order_item_id')->on('order_items')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

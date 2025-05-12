@@ -15,9 +15,9 @@ return new class extends Migration
             $table->unsignedBigInteger('event_id');
             $table->integer('rating')->unsigned();
             $table->text('comment')->nullable();
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->foreign('event_id')->references('event_id')->on('events')->onDelete('cascade');
+            $table->timestamps();
         });
 
         // Add CHECK constraint for rating (1-5)

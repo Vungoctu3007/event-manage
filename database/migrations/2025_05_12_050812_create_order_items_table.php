@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreign('seat_id')->references('seat_id')->on('seats')->onDelete('set null');
             $table->index('order_id');
             $table->index('ticket_id');
+            $table->timestamps();
         });
 
         // Add CHECK constraint via raw SQL

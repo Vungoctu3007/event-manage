@@ -16,6 +16,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->text('logo_url')->nullable();
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

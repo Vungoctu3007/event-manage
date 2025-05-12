@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreign('venue_id')->references('venue_id')->on('venues')->onDelete('cascade');
             $table->foreign('event_id')->references('event_id')->on('events')->onDelete('cascade');
             $table->index(['event_id', 'status']);
+            $table->timestamps();
         });
     }
 
