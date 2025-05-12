@@ -1,133 +1,162 @@
-const Home: React.FC = () => {
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Play, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
+
+const featuredEvents = [
+  { id: 1, title: "THẮP SÁNG HÀ NỘI", subtitle: "CÔNG VIÊN MỘT MÙA", date: "01.06.2025", img: "/thap-sang-ha-noi.jpg" },
+  { id: 2, title: "BABYMONSTER", subtitle: "2025 BABYMONSTER 1ST WORLD TOUR", date: "2025.05.31, SAT 8PM", img: "/babymonster.jpg" },
+];
+
+const specialEvents = [
+  { id: 1, title: "VIE ON", subtitle: "SVD lần 6", date: "2025.05.31", img: "/vie-on.jpg", rank: 1 },
+  { id: 2, title: "ALL-ROUNDER", subtitle: "OFFICIAL MERCHANDISE COLLECTION", img: "/all-rounder.jpg", rank: 2 },
+  { id: 3, title: "LỄ GIỮA HAI THẾ KỶ", subtitle: "QUÝ TẦN", img: "/le-giua-hai-the-ky.jpg", rank: 3 },
+  { id: 4, title: "MỘT XƯA", subtitle: "THÁI ĐÔNG", img: "/mot-xua.jpg", rank: 4 },
+];
+
+const trendingEvents = [
+  { id: 1, title: "VIE ON", subtitle: "SVD lần 6", img: "/vie-on-trending.jpg", rank: 1 },
+  { id: 2, title: "PHÚ THỌ SUMMER TOUR", subtitle: "SVD PHÚ THỌ, THHCM", img: "/phu-tho-summer.jpg", rank: 2 },
+  { id: 3, title: "LỄ GIỮA HAI THẾ KỶ", subtitle: "QUÝ TẦN", img: "/le-giua-hai-the-ky-trending.jpg", rank: 3 },
+  { id: 4, title: "MỘT XƯA", subtitle: "THÁI ĐÔNG", img: "/mot-xua-trending.jpg", rank: 4 },
+];
+
+const recommendedEvents = [
+  { id: 1, title: "[FLOWER 1969'S] MOSS FRAME WORKSHOP", subtitle: "BỨC TRANH THIÊN NHIÊN", date: "10 tháng 05, 2025", price: "315,000đ", img: "/moss-frame.jpg" },
+  { id: 2, title: "Ngắm niềm bứt trỗi đến tuyết đẹp cùng Đại thiên vạn Nha Trang", date: "10 tháng 05, 2025", price: "100,000đ", img: "/nha-trang.jpg" },
+  { id: 3, title: "[FLOWER 1969'S] WORKSHOP SOLID PERFUME - NƯỚC HOA KHÔ", date: "10 tháng 05, 2025", price: "279,000đ", img: "/perfume-workshop.jpg" },
+  { id: 4, title: "MADAME SHOW - NHỮNG DƯỚNG CHIM BAY", date: "10 tháng 05, 2025", price: "650,000đ", img: "/madame-show.jpg" },
+];
+
+const weekendEvents = [
+  { id: 1, title: "Nhà Hát IDECAF: Tiếng Mỉa Dia!", date: "09 tháng 05, 2025", price: "270,000đ", img: "/tieng-mia-dia.jpg" },
+  { id: 2, title: "[BEN THÀNH] Đêm nhạc Quang Định", date: "09 tháng 05, 2025", price: "500,000đ", img: "/dem-nhac-quang-dinh.jpg" },
+  { id: 3, title: "[VIVIAN VU'S CANDLES] WORKSHOP LÀM NẾN THƠM VÀ SÁP THOM HANDMADE", date: "10 tháng 05, 2025", price: "315,000đ", img: "/candle-workshop.jpg" },
+  { id: 4, title: "[FLOWER 1969'S] MOSS FRAME WORKSHOP", subtitle: "BỨC TRANH THIÊN NHIÊN", date: "10 tháng 05, 2025", price: "315,000đ", img: "/moss-frame-weekend.jpg" },
+];
+
+export default function Home() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % featuredEvents.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + featuredEvents.length) % featuredEvents.length);
+
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4">
-      {/* Explore Events Section */}
+    <main className="container mx-auto p-4 bg-gray-900 text-white">
+      {/* Carousel Section */}
+      <section className="relative mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {featuredEvents.map((event, index) => (
+            <Card key={event.id} className={`overflow-hidden ${index === currentSlide ? "block" : "hidden lg:block"}`}>
+              <CardContent className="p-0">
+                <img src={event.img} alt={event.title} className="w-full h-64 lg:h-96 object-cover" />
+                <div className="p-4">
+                  <h3 className="text-lg font-bold">{event.title}</h3>
+                  <p className="text-sm text-gray-400">{event.subtitle}</p>
+                  <p className="text-sm text-gray-500">{event.date}</p>
+                  <Button className="mt-2 bg-green-500 hover:bg-green-600 text-white">
+                    Xem chi tiết <Play className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <Button onClick={prevSlide} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 hover:bg-gray-700">
+          <ChevronLeft />
+        </Button>
+        <Button onClick={nextSlide} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 hover:bg-gray-700">
+          <ChevronRight />
+        </Button>
+      </section>
+
+      {/* Special Events Section */}
       <section className="mb-8">
-        <h1 className="text-3xl font-bold mb-4">Khám phá sự kiện</h1>
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Tìm kiếm sự kiện theo tên, địa điểm hoặc ngày..."
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-          <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <svg
-              className="w-5 h-5 text-gray-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </span>
+        <h2 className="text-xl font-bold mb-4">Sự kiện đặc biệt</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {specialEvents.map((event) => (
+            <Card key={event.id} className="overflow-hidden relative">
+              <CardContent className="p-0">
+                <img src={event.img} alt={event.title} className="w-full h-48 object-cover" />
+                {event.rank && (
+                  <span className="absolute top-0 left-0 bg-green-500 text-white text-2xl font-bold p-2 rounded-br-lg">{event.rank}</span>
+                )}
+                <div className="p-4">
+                  <h3 className="text-lg font-bold">{event.title}</h3>
+                  <p className="text-sm text-gray-400">{event.subtitle}</p>
+                  {event.date && <p className="text-sm text-gray-500">{event.date}</p>}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </section>
 
-      {/* Tags Section */}
+      {/* Trending Events Section */}
       <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-4">Thể loại</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-blue-200 p-4 rounded-lg flex items-center space-x-3">
-            <span className="text-blue-500">🎵</span>
-            <div>
-              <h3 className="font-medium">Âm nhạc</h3>
-              <p className="text-sm text-gray-500">Biểu diễn, hòa nhạc, lễ hội...</p>
-            </div>
-          </div>
-          <div className="bg-blue-200 p-4 rounded-lg flex items-center space-x-3">
-            <span className="text-purple-500">🎤</span>
-            <div>
-              <h3 className="font-medium">Hội nghị</h3>
-              <p className="text-sm text-gray-500">Hội thảo, hội thảo chuyên đề và sự kiện kinh doanh</p>
-            </div>
-          </div>
-          <div className="bg-blue-200 p-4 rounded-lg flex items-center space-x-3">
-            <span className="text-purple-500">🎭</span>
-            <div>
-              <h3 className="font-medium">Thể thao</h3>
-              <p className="text-sm text-gray-500">Trận đấu, giải đấu và cuộc thi</p>
-            </div>
-          </div>
-          <div className="bg-blue-200 p-4 rounded-lg flex items-center space-x-3">
-            <span className="text-purple-500">🎨</span>
-            <div>
-              <h3 className="font-medium">Nghệ thuật</h3>
-              <p className="text-sm text-gray-500">Triển lãm, phòng trưng bày và biểu diễn</p>
-            </div>
-          </div>
+        <h2 className="text-xl font-bold mb-4 flex items-center">
+          Sự kiện xu hướng <span className="ml-2 text-yellow-500">🔥</span>
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {trendingEvents.map((event) => (
+            <Card key={event.id} className="overflow-hidden relative">
+              <CardContent className="p-0">
+                <img src={event.img} alt={event.title} className="w-full h-48 object-cover" />
+                {event.rank && (
+                  <span className="absolute top-0 left-0 bg-green-500 text-white text-2xl font-bold p-2 rounded-br-lg">{event.rank}</span>
+                )}
+                <div className="p-4">
+                  <h3 className="text-lg font-bold">{event.title}</h3>
+                  <p className="text-sm text-gray-400">{event.subtitle}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </section>
 
-      {/* Highlighted Events Section */}
+      {/* Recommended Events Section */}
       <section className="mb-8">
-        <h2 className="text-xl font-bold mb-4">Sự kiện nổi bật</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
-            <p className="text-sm text-gray-500 mb-2">Dec 25, 2023 • 8:00 PM</p>
-            <h3 className="font-semibold">Summer Music Festival</h3>
-            <p className="text-sm text-gray-500 mb-4">Nhạc hội lớn Hà Nội</p>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
-              Xem chi tiết
-            </button>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
-            <p className="text-sm text-gray-500 mb-2">Dec 25, 2024 • 9:30 AM</p>
-            <h3 className="font-semibold">Hội nghị công nghệ 2025</h3>
-            <p className="text-sm text-gray-500 mb-4">Âm hội nghị quốc gia</p>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
-              Xem chi tiết
-            </button>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
-            <p className="text-sm text-gray-500 mb-2">Feb 5, 2024 • 7:00 PM</p>
-            <h3 className="font-semibold">Giải vô địch bóng đá</h3>
-            <p className="text-sm text-gray-500 mb-4">Sân vận động Mỹ Đình</p>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
-              Xem chi tiết
-            </button>
-          </div>
+        <h2 className="text-xl font-bold mb-4">Dành cho bạn</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {recommendedEvents.map((event) => (
+            <Card key={event.id} className="overflow-hidden">
+              <CardContent className="p-0">
+                <img src={event.img} alt={event.title} className="w-full h-48 object-cover" />
+                <div className="p-4">
+                  <h3 className="text-lg font-bold">{event.title}</h3>
+                  <p className="text-sm text-gray-400">{event.subtitle}</p>
+                  <p className="text-sm text-gray-500">{event.date}</p>
+                  <p className="text-sm text-green-500 font-bold">{event.price}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="text-center mt-4">
+          <Button className="bg-green-500 hover:bg-green-600 text-white">Xem thêm</Button>
         </div>
       </section>
 
-      {/* Upcoming Events Section */}
+      {/* Weekend Events Section */}
       <section>
-        <h2 className="text-xl font-bold mb-4">Sự kiện sắp diễn ra</h2>
-        <div className="space-y-4">
-          <div className="bg-white p-4 rounded-lg flex justify-between items-center">
-            <div>
-              <h3 className="font-medium">Khởi mạc triển lãm nghệ thuật</h3>
-              <p className="text-sm text-gray-500">Dec 10, 2025 • Bảo tàng Mỹ thuật</p>
-            </div>
-            <span className="text-gray-500">➔</span>
-          </div>
-          <div className="bg-white p-4 rounded-lg flex justify-between items-center">
-            <div>
-              <h3 className="font-medium">Sự kiện kết nối kinh doanh</h3>
-              <p className="text-sm text-gray-500">Dec 12, 2025 • Khách sạn Melia</p>
-            </div>
-            <span className="text-gray-500">➔</span>
-          </div>
-          <div className="bg-white p-4 rounded-lg flex justify-between items-center">
-            <div>
-              <h3 className="font-medium">Đêm nhạc JAZZ</h3>
-              <p className="text-sm text-gray-500">Dec 18, 2025 • CLB xã hội Hà Nội</p>
-            </div>
-            <span className="text-gray-500">➔</span>
-          </div>
+        <h2 className="text-xl font-bold mb-4">Cuối tuần này</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {weekendEvents.map((event) => (
+            <Card key={event.id} className="overflow-hidden">
+              <CardContent className="p-0">
+                <img src={event.img} alt={event.title} className="w-full h-48 object-cover" />
+                <div className="p-4">
+                  <h3 className="text-lg font-bold">{event.title}</h3>
+                  <p className="text-sm text-gray-500">{event.date}</p>
+                  <p className="text-sm text-green-500 font-bold">{event.price}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-        <button className="mt-4 text-blue-600  hover:underline">Xem tất cả</button>
       </section>
-    </div>
+    </main>
   );
-};
-
-export default Home;
+}

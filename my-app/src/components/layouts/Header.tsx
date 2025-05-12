@@ -1,38 +1,33 @@
-import { Link } from "react-router-dom";
-import avatarImage from "../../assets/avatar.jpg";
-const Header: React.FC = () => {
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
+
+export default function Header() {
   return (
-    <header className="bg-white shadow-sm py-4 px-6 flex items-center justify-between">
-
-      <div className="flex items-center space-x-4">
-        <span className="text-gray-500 font-medium">Group 14</span>
-        <nav className="flex space-x-6">
-          <Link to="/" className="text-gray-700 hover:text-purple-600 font-medium">
-            Home
-          </Link>
-          <Link to="/events" className="text-gray-700 hover:text-purple-600 font-medium">
-            Events
-          </Link>
-          <Link to="/my-tickets" className="text-gray-700 hover:text-purple-600 font-medium">
-            My Tickets
-          </Link>
-        </nav>
-      </div>
-
-      <div className="flex items-center space-x-4">
-        <button className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
-          Create Event
-        </button>
-        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-300">
-          <img
-            src={avatarImage}
-            alt="User Avatar"
-            className="w-full h-full object-cover"
-          />
+    <header className="bg-green-500 text-white p-4 flex flex-col sm:flex-row justify-between items-center sticky top-0 z-10 shadow-md">
+      <div className="flex justify-between w-full sm:w-auto items-center mb-2 sm:mb-0">
+        <div className="text-2xl font-bold">ticketbox</div>
+        <div className="sm:hidden flex space-x-2 text-sm">
+          <span>Vé đã mua</span> | <span>Đăng nhập</span> | <span>Đăng ký</span>
         </div>
       </div>
+      <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+        <div className="relative w-full sm:w-64">
+          <input
+            type="text"
+            placeholder="Bạn tìm gì hôm nay?"
+            className="p-2 rounded-md text-black w-full"
+          />
+          <Button className="absolute right-0 top-0 h-full bg-transparent text-white hover:bg-green-600">
+            <Search />
+          </Button>
+        </div>
+        <Button className="hidden sm:inline-block bg-transparent hover:bg-green-600 text-sm">Tìm kiếm</Button>
+        <Button className="bg-transparent hover:bg-green-600 w-full sm:w-auto text-sm">Tạo sự kiện</Button>
+        <div className="hidden sm:flex space-x-2 text-sm">
+          <span>Vé đã mua</span> | <span>Đăng nhập</span> | <span>Đăng ký</span>
+        </div>
+      </div>
+     
     </header>
   );
-};
-
-export default Header;
+}
