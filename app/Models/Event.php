@@ -23,7 +23,9 @@ class Event extends Model
         'start_time',
         'end_time',
         'status',
-        'banner_url'
+        'banner_url',
+        'logo_url',
+        'background_url',
     ];
 
     public function organizer()

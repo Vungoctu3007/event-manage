@@ -20,6 +20,8 @@ return new class extends Migration
             $table->timestamp('end_time');
             $table->enum('status', ['active', 'cancelled', 'sold_out']);
             $table->text('banner_url')->nullable();
+            $table->text('logo_url')->nullable(); 
+            $table->text('background_url')->nullable(); 
 
             $table->foreign('organizer_id')->references('organizer_id')->on('organizers')->onDelete('cascade');
             $table->foreign('category_id')->references('category_id')->on('categories')->onDelete('set null');

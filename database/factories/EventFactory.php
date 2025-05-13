@@ -28,6 +28,8 @@ class EventFactory extends Factory
             'end_time' => $this->faker->dateTimeBetween($startTime, $startTime->format('Y-m-d H:i:s').' +4 hours'),
             'status' => $this->faker->randomElement(['active', 'cancelled', 'sold_out']),
             'banner_url' => $this->faker->imageUrl(800, 400, 'event'),
+            'logo_url' => $this->faker->imageUrl(800, 400, 'event'),
+            'background_url' => $this->faker->imageUrl(1200, 700, 'event'),
         ];
     }
 }
