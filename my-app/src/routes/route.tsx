@@ -1,5 +1,5 @@
 import DetailTicket from "../pages/client/DetailTicket/DetailTicket";
-import DefaultLayout from "../components/layouts/DefaultLayout";
+import DefaultLayout from "../components/layouts/Client/DefaultLayout";
 import Home from "../pages/client/Home/Home";
 import ProfileHome from "@/pages/client/Profile/ProfileHome";
 import SeatingChart from "@/pages/client/DetailTicket/SeatingTicket";

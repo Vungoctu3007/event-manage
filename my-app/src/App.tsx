@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import publicRoutes from "./routes/route";
-import DefaultLayout from "./components/layouts/DefaultLayout";
+import DefaultLayout from "./components/layouts/Client/DefaultLayout";
 function App() {
   useEffect(() => {
     document.title = "Event Manage !";
