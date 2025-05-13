@@ -37,7 +37,7 @@ services:
       - laravel-development
     depends_on:
       mysql:
-        condition: service_started
+        condition: service_healthy  # Đổi thành service_healthy
 
   workspace:
     build:
@@ -60,6 +60,9 @@ services:
       - ./:/var/www
     networks:
       - laravel-development
+    depends_on:
+      mysql:
+        condition: service_healthy  # Đổi thành service_healthy
 
   mysql:
     image: mysql:8.0
@@ -83,17 +86,17 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     ports:
-      - "8080:80"  # Ánh xạ cổng 8080 trên host đến cổng 80 của phpMyAdmin
+      - "8080:80"
     environment:
-      - PMA_HOST=mysql  # Tên dịch vụ MySQL trong cùng mạng
-      - PMA_USER=laravel  # Người dùng MySQL (khớp với MYSQL_USER)
-      - PMA_PASSWORD=secret  # Mật khẩu (khớp với MYSQL_PASSWORD)
-      - PMA_PORT=3306  # Cổng MySQL
+      - PMA_HOST=mysql
+      - PMA_USER=laravel
+      - PMA_PASSWORD=secret
+      - PMA_PORT=3306
     networks:
       - laravel-development
     depends_on:
       mysql:
-        condition: service_healthy  # Chờ MySQL sẵn sàng
+        condition: service_healthy
 
   redis:
     image: redis:alpine
