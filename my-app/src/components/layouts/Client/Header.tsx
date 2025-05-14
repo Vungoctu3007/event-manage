@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="bg-green-500 text-white p-4 flex flex-col sm:flex-row justify-between items-center sticky top-0 z-10 shadow-md">
+    <header className="bg-primary-color text-white p-4 flex flex-col sm:flex-row justify-between items-center sticky top-0 z-10 shadow-md">
       <div className="flex justify-between w-full sm:w-auto items-center mb-2 sm:mb-0">
         <div className="text-2xl font-bold">ticketbox</div>
         <div className="sm:hidden flex space-x-2 text-sm">
@@ -27,7 +27,7 @@ export default function Header() {
           <span>Vé đã mua</span> | <span>Đăng nhập</span> | <span>Đăng ký</span>
         </div>
       </div>
-     
+
     </header>
   );
 }
