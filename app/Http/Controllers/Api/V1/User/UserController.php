@@ -7,6 +7,7 @@ use App\Services\UserService;
 use App\Repositories\Interfaces\UserRepositoryInterface as UserRepository;
 // use App\Repositories\UserRepository;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -23,7 +24,8 @@ class UserController extends Controller
     }
 
     public function index(Request $request) {
-        $user = $this->userRepository->all();
+        // $user = $this->userRepository->all();
+        $user = DB::table('users')->get();
 
         return response()->json([
             'data' => $user
