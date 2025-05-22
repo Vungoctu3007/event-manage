@@ -16,10 +16,9 @@ class OrganizerFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::factory(),
             'organization_name' => $this->faker->company,
             'description' => $this->faker->paragraph,
-            'logo_url' => $this->faker->imageUrl(200, 200, 'logo'),
+            'organizer_url' => $this->faker->imageUrl(200, 200, 'logo'),
         ];
     }
 }

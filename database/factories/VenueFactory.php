@@ -18,7 +18,7 @@ class VenueFactory extends Factory
             'name' => $this->faker->company . ' Arena',
             'address' => $this->faker->streetAddress,
             'city' => $this->faker->city,
-            'capacity' => $this->faker->numberBetween(100, 50000),
+            
         ];
     }
 }

@@ -21,7 +21,9 @@ class ScheduleEventFactory extends Factory
             'schedule_type' => $this->faker->randomElement(['performance', 'session', 'general']),
             'start_time' => $startTime,
             'end_time' => $this->faker->dateTimeBetween($startTime, $startTime->format('Y-m-d H:i:s').' +2 hours'),
-            'description' => $this->faker->sentence,
+    
         ];
     }
+
+    
 }

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -8,10 +8,16 @@ import ScheduleTickets from "./ScheduleTickets";
 import Settings from "./SettingEvent";
 import PaymentInfo from "./PaymentInfo";
 import { useToast } from "@/hooks/use-toast";
+import { createEvent } from "@/services/EventService";
+import type { CreateEventData } from "@/types/Event";
 
 const CreateEvent: React.FC = () => {
     const [activeTab, setActiveTab] = useState<string>("info");
     const [completedTabs, setCompletedTabs] = useState<string[]>([]);
+    const [eventData, setEventData] = useState<CreateEventData | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [isSaved, setIsSaved] = useState(false); // Thêm state để theo dõi trạng thái đã lưu
+
     const { toast } = useToast();
 
     const handleContinue = () => {
@@ -21,14 +27,52 @@ const CreateEvent: React.FC = () => {
             const nextTab = tabOrder[currentIndex + 1];
             setCompletedTabs([...completedTabs, activeTab]);
             setActiveTab(nextTab);
+            setIsSaved(false); // Reset trạng thái đã lưu khi chuyển tab
         } else if (currentIndex === tabOrder.length - 1) {
-            console.log('ok')
             toast({
                 title: "Sự Kiện Đang Chờ Duyệt",
                 description:
                     "Đối tác vui lòng liên hệ Ticketbox email: tbox.bd@ticketbox.vn để được hỗ trợ trong trường hợp cần thiết. Trân trọng cảm ơn!",
                 duration: 3000,
             });
+        }
+    };
+
+    // Xử lý submit event info
+    const handleEventDataChange = (data: CreateEventData) => {
+        setEventData(data);
+        setIsSaved(false); // Reset trạng thái đã lưu khi dữ liệu thay đổi
+    };
+
+    const handleSave = async () => {
+        if (!eventData) {
+            toast({
+                title: "Lỗi",
+                description:
+                    "Vui lòng điền đầy đủ thông tin sự kiện trước khi lưu.",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const response = await createEvent(eventData);
+            setIsSaved(true); // Đánh dấu đã lưu thành công
+            toast({
+                title: "Thành công",
+                description: response.message || "Sự kiện đã được lưu thành công!",
+            });
+            setCompletedTabs((prev) => [...new Set([...prev, "info"])]); // Đảm bảo không trùng lặp
+            setActiveTab("schedule");
+        } catch (error: any) {
+            toast({
+                title: "Lỗi",
+                description: error?.response?.data?.message || "Có lỗi xảy ra",
+                variant: "destructive",
+            });
+        } finally {
+            setLoading(false); // Đặt lại trạng thái loading trong mọi trường hợp
         }
     };
 
@@ -121,12 +165,17 @@ const CreateEvent: React.FC = () => {
                         </TabsList>
                     </Tabs>
                     <div className="flex space-x-2">
-                        <Button className="bg-gray-600 hover:bg-gray-700 text-white rounded-md px-4 py-2 transition-colors duration-200">
-                            Lưu
+                        <Button
+                            onClick={handleSave}
+                            className="bg-gray-600 hover:bg-gray-700 text-white rounded-md px-4 py-2 transition-colors duration-200"
+                            disabled={loading || isSaved} // Vô hiệu hóa khi đang lưu hoặc đã lưu
+                        >
+                            {loading ? "Đang lưu..." : isSaved ? "Đã lưu" : "Lưu"}
                         </Button>
                         <Button
                             onClick={handleContinue}
                             className="bg-green-500 hover:bg-green-600 text-white rounded-md px-4 py-2 transition-colors duration-200"
+                            disabled={activeTab === "info" && !isSaved} // Vô hiệu hóa nút Tiếp tục nếu chưa lưu ở tab info
                         >
                             Tiếp tục
                         </Button>
@@ -141,7 +190,7 @@ const CreateEvent: React.FC = () => {
                     className="w-full"
                 >
                     <TabsContent value="info">
-                        <EventInfo />
+                        <EventInfo onDataChange={handleEventDataChange} />
                     </TabsContent>
                     <TabsContent value="schedule">
                         <ScheduleTickets />

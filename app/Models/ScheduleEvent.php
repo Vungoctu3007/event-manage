@@ -16,7 +16,6 @@ class ScheduleEvent extends Model
         'schedule_type',
         'start_time',
         'end_time',
-        'description',
     ];
     protected $casts = [
         'start_time' => 'datetime',

@@ -11,7 +11,7 @@ class Venue extends Model
     use Notifiable, HasFactory;
     protected $primaryKey = 'venue_id';
 
-    protected $fillable = ['name', 'address', 'city', 'capacity'];
+    protected $fillable = ['name', 'address', 'city'];
 
     public function events()
     {

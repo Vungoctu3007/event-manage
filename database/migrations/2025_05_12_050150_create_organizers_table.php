@@ -11,11 +11,9 @@ return new class extends Migration
     {
         Schema::create('organizers', function (Blueprint $table) {
             $table->bigIncrements('organizer_id');
-            $table->unsignedBigInteger('user_id')->unique();
             $table->string('organization_name', 150);
             $table->text('description')->nullable();
-            $table->text('logo_url')->nullable();
-            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
+            $table->text('organizer_url')->nullable();
             $table->timestamps();
         });
     }

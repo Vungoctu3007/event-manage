@@ -8,17 +8,25 @@ use Illuminate\Notifications\Notifiable;
 
 class Ticket extends Model
 {
-     use Notifiable, HasFactory;
-     protected $primaryKey = 'ticket_id';
+    use Notifiable, HasFactory;
+    
+    protected $primaryKey = 'ticket_id';
 
     protected $fillable = [
-        'event_id', 'ticket_type', 'price', 'total_quantity',
-        'sold_quantity', 'sale_start', 'sale_end'
+        'schedule_id',
+        'ticket_type',
+        'price',
+        'total_quantity',
+        'sold_quantity',
+        'sale_start',
+        'sale_end',
+        'description',
+        'image_url',
     ];
 
-    public function event()
+    public function schedule()
     {
-        return $this->belongsTo(Event::class, 'event_id');
+        return $this->belongsTo(ScheduleEvent::class, 'schedule_id');
     }
 
     public function orderItems()

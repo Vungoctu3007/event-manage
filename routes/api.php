@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Event\EventController;
 use App\Http\Controllers\Api\V1\Media\MediaController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use Illuminate\Http\Request;
@@ -17,4 +18,11 @@ Route::prefix('media')->group(function () {
     Route::get('/image/{publicId}', [MediaController::class, 'getImageUrl']);
     Route::post('/upload-image', [MediaController::class, 'uploadImage']);
     Route::post('/upload-video', [MediaController::class, 'uploadVideo']);
+});
+
+// Event Organizer
+Route::prefix('event')->group(function () {
+    Route::post('/create', [EventController::class, 'createEvent']);
+    Route::get('/{event_id}/schedules', [EventController::class, 'getSchedulesWithTickets']);
+    Route::get('/pagination', [EventController::class, 'getListEventsPagination']);
 });

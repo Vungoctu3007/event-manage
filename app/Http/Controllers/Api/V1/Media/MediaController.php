@@ -78,7 +78,7 @@ class MediaController extends Controller
             [
                 'video.required' => 'Vui lòng chọn video',
                 'video.mimes' => 'Chỉ hỗ trợ các định dạng mp4, mov, avi, wmv',
-                'video.max' => 'Kích thước tệp tối đa là 20MB',
+                'video.max' => 'Kích thước tệp tối đa là 100MB',
             ]
         );
 

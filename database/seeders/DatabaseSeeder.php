@@ -27,41 +27,40 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-       
-        // User::factory()->count(20)->create();
-        // Category::factory()->count(5)->create();
-        // Venue::factory()->count(5)->create();
-        // Organizer::factory()->count(10)->create();
+        User::factory()->count(5)->create();
+        Category::factory()->count(5)->create();
+        Venue::factory()->count(5)->create();
+        Organizer::factory()->count(5)->create();
 
-        // // Seed events (depends on Category, Venue, Organizer)
-        // Event::factory()->count(15)->create();
+        // Seed events (depends on Category, Venue, Organizer)
+        Event::factory()->count(5)->create();
 
-        // // Seed tickets and seating maps (depends on Event, Venue)
-        // Ticket::factory()->count(10)->create();
-        // SeatingMap::factory()->count(10)->create();
+        // Seed tickets and seating maps (depends on Event, Venue)
+        Ticket::factory()->count(5)->create();
+        SeatingMap::factory()->count(5)->create();
 
-        // // Seed seats (depends on Venue, Event)
-        // Seat::factory()->count(100)->create();
+        // Seed seats (depends on Venue, Event)
+        Seat::factory()->count(5)->create();
 
-        // // Seed orders (depends on User)
-        // Order::factory()->count(20)->create();
+        // Seed orders (depends on User)
+        Order::factory()->count(5)->create();
 
-        // // Seed order items (depends on Order, Ticket, Seat)
-        // OrderItem::factory()->count(10)->create();
+        // Seed order items (depends on Order, Ticket, Seat)
+        OrderItem::factory()->count(5)->create();
 
-        // // Seed payments (depends on Order)
-        // Payment::factory()->count(10)->create();
+        // Seed payments (depends on Order)
+        Payment::factory()->count(5)->create();
 
         // Seed event reviews (depends on User, Event)
-        EventReview::factory()->count(10)->create();
+        EventReview::factory()->count(5)->create();
 
         // Seed schedule events (depends on Event)
-        ScheduleEvent::factory()->count(10)->create();
+        ScheduleEvent::factory()->count(5)->create();
 
         // Seed user tickets (depends on User, Ticket)
-        TicketBooking::factory()->count(10)->create();
+        TicketBooking::factory()->count(5)->create();
 
         // Seed QR codes (depends on OrderItem)
-        QRCode::factory()->count(10)->create();
+        QRCode::factory()->count(5)->create();
     }
 }

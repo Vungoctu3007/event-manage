@@ -14,11 +14,9 @@ return new class extends Migration
             $table->string('name', 150);
             $table->text('address');
             $table->string('city', 100)->nullable();
-            $table->integer('capacity')->unsigned();
             $table->timestamps();
         });
 
-        DB::statement('ALTER TABLE venues ADD CONSTRAINT check_capacity_positive CHECK (capacity > 0)');
     }
 
     public function down()

@@ -42,7 +42,6 @@ class Event extends Model
     {
         return $this->belongsTo(Venue::class, 'venue_id');
     }
-
     public function tickets()
     {
         return $this->hasMany(Ticket::class, 'event_id');
@@ -57,4 +56,10 @@ class Event extends Model
     {
         return $this->hasMany(EventReview::class, 'event_id');
     }
+    public function seatingMap()
+    {
+        return $this->hasOne(SeatingMap::class, 'event_id', 'event_id');
+    }
+
+    
 }

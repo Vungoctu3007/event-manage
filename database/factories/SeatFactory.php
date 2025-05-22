@@ -18,15 +18,15 @@ class SeatFactory extends Factory
 
     public function definition()
     {
-        return [
-            'ticket_id' => Ticket::factory(),
-            'event_id' => Event::factory(),
+          return [
             'map_id' => SeatingMap::factory(),
-            'seat_number' => $this->faker->numberBetween(1, 50),
+            'event_id' => Event::factory(),
+            'ticket_id' => Ticket::factory(), 
+            'seat_number' => $this->faker->unique()->numberBetween(1, 100),
             'seat_row' => $this->faker->randomLetter,
             'section' => $this->faker->randomElement(['orchestra', 'balcony', 'mezzanine', 'VIP']),
             'status' => $this->faker->randomElement(['available', 'reserved', 'sold']),
-            'reserved_until' => $this->faker->optional(0.3)->dateTimeBetween('now', '+1 week'),
+            'reserved_until' => $this->faker->optional(0.2)->dateTimeBetween('now', '+7 days'),
         ];
     }
 }
