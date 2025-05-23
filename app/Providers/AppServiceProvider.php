@@ -13,9 +13,9 @@ class AppServiceProvider extends ServiceProvider
         'App\Repositories\Interfaces\AuthRepositoryInterface' => 'App\Repositories\AuthRepository',
         'App\Repositories\Interfaces\EventRepositoryInterface' => 'App\Repositories\EventRepository',
         'App\Services\Interfaces\EventServiceInterface' => 'App\Services\EventService',
-        // 'App\Services\Interfaces\ScheduleEventRepositoryInterface' => 'App\Services\ScheduleEventRepository',
-        // 'App\Services\Interfaces\TicketRepositoryInterface' => 'App\Services\TicketRepository',
-
+        'App\Repositories\Interfaces\ScheduleEventRepositoryInterface' => 'App\Repositories\ScheduleEventRepository',
+        'App\Repositories\Interfaces\TicketRepositoryInterface' => 'App\Repositories\TicketRepository',
+        'App\Services\Interfaces\TicketServiceInterface' => 'App\Services\TicketService',
     ];
 
     /**
@@ -31,8 +31,5 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-        
-    }
+    public function boot(): void {}
 }

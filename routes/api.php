@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Event\EventController;
 use App\Http\Controllers\Api\V1\Media\MediaController;
+use App\Http\Controllers\Api\V1\Ticket\TicketController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,4 +26,12 @@ Route::prefix('event')->group(function () {
     Route::post('/create', [EventController::class, 'createEvent']);
     Route::get('/{event_id}/schedules', [EventController::class, 'getSchedulesWithTickets']);
     Route::get('/pagination', [EventController::class, 'getListEventsPagination']);
+});
+
+
+// Tickets 
+Route::prefix('ticket')->group(function () {
+    Route::post('/create', [TicketController::class, 'createScheduleTicket']);
+    Route::patch('/update/{schedule_id}/{ticket_id}', [TicketController::class, 'updateTicket']);
+    Route::delete('/delete/{schedule_id}/{ticket_id}', [TicketController::class, 'deleteTicket']);
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Thêm useEffect
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -21,10 +21,11 @@ import {
 } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Plus } from "lucide-react";
-import type { TicketType } from "@/types/TicketType";
+import type { TicketType } from "@/types/Ticket";
 
 interface TicketFormProps {
     onSave: (ticket: TicketType) => void;
+    initialData?: TicketType; // Thêm prop initialData để hỗ trợ chế độ chỉnh sửa
 }
 
 const DateTimePicker: React.FC<{
@@ -41,14 +42,9 @@ const DateTimePicker: React.FC<{
         setDate(newDate);
         if (newDate && time) {
             const [hours, minutes] = time.split(":");
-            const updatedDate = newDate
-                ? new Date(
-                      newDate.setHours(
-                          parseInt(hours, 10),
-                          parseInt(minutes, 10)
-                      )
-                  )
-                : undefined;
+            const updatedDate = new Date(
+                newDate.setHours(parseInt(hours, 10), parseInt(minutes, 10))
+            );
             onChange(updatedDate);
         }
     };
@@ -107,43 +103,120 @@ const DateTimePicker: React.FC<{
     );
 };
 
-const TicketForm: React.FC<TicketFormProps> = ({ onSave }) => {
+const TicketForm: React.FC<TicketFormProps> = ({ onSave, initialData }) => {
     const [open, setOpen] = useState(false);
-    const [ticketName, setTicketName] = useState("");
-    const [price, setPrice] = useState(0);
-    const [isFree, setIsFree] = useState(false);
-    const [totalQuantity, setTotalQuantity] = useState(10);
-    const [minPerOrder, setMinPerOrder] = useState(1);
-    const [maxPerOrder, setMaxPerOrder] = useState(10);
+    const [ticketName, setTicketName] = useState(initialData?.ticketName || "");
+    const [price, setPrice] = useState(initialData?.price || 0);
+    const [isFree, setIsFree] = useState(initialData?.isFree || false);
+    const [totalQuantity, setTotalQuantity] = useState(initialData?.totalQuantity || 10);
+    const [minPerOrder, setMinPerOrder] = useState(initialData?.minPerOrder || 1);
+    const [maxPerOrder, setMaxPerOrder] = useState(initialData?.maxPerOrder || 10);
     const [startSaleDate, setStartSaleDate] = useState<Date | undefined>(
-        new Date(2025, 4, 16, 14, 14)
+        initialData?.startSaleDate
+            ? typeof initialData.startSaleDate === "string"
+                ? new Date(initialData.startSaleDate)
+                : initialData.startSaleDate
+            : new Date(2025, 4, 16, 14, 14)
     );
     const [endSaleDate, setEndSaleDate] = useState<Date | undefined>(
-        new Date(2025, 4, 15, 7, 0)
+        initialData?.endSaleDate
+            ? typeof initialData.endSaleDate === "string"
+                ? new Date(initialData.endSaleDate)
+                : initialData.endSaleDate
+            : new Date(2025, 4, 15, 7, 0)
     );
-    const [description, setDescription] = useState("");
-    const [image, setImage] = useState<File | null>(null);
+    const [description, setDescription] = useState(initialData?.description || "");
+    const [image, setImage] = useState<File | null>(initialData?.image || null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+    // Cập nhật state khi initialData thay đổi (chế độ chỉnh sửa)
+    useEffect(() => {
+        if (initialData) {
+            setTicketName(initialData.ticketName || "");
+            setPrice(initialData.price || 0);
+            setIsFree(initialData.isFree || false);
+            setTotalQuantity(initialData.totalQuantity || 10);
+            setMinPerOrder(initialData.minPerOrder || 1);
+            setMaxPerOrder(initialData.maxPerOrder || 10);
+            setStartSaleDate(
+                initialData.startSaleDate
+                    ? typeof initialData.startSaleDate === "string"
+                        ? new Date(initialData.startSaleDate)
+                        : initialData.startSaleDate
+                    : new Date(2025, 4, 16, 14, 14)
+            );
+            setEndSaleDate(
+                initialData.endSaleDate
+                    ? typeof initialData.endSaleDate === "string"
+                        ? new Date(initialData.endSaleDate)
+                        : initialData.endSaleDate
+                    : new Date(2025, 4, 15, 7, 0)
+            );
+            setDescription(initialData.description || "");
+            setImage(initialData.image || null);
+            if (initialData.image) {
+                setImagePreview(URL.createObjectURL(initialData.image));
+            }
+        }
+    }, [initialData]);
 
     const handleSave = () => {
+        // Kiểm tra hợp lệ trước khi lưu
+        if (!ticketName) {
+            alert("Vui lòng nhập tên vé!");
+            return;
+        }
+        if (!isFree && price <= 0) {
+            alert("Giá vé phải lớn hơn 0 nếu không phải vé miễn phí!");
+            return;
+        }
+        if (totalQuantity <= 0) {
+            alert("Tổng số lượng vé phải lớn hơn 0!");
+            return;
+        }
+        if (minPerOrder <= 0) {
+            alert("Số lượng tối thiểu mỗi đơn phải lớn hơn 0!");
+            return;
+        }
+        if (maxPerOrder < minPerOrder) {
+            alert("Số lượng tối đa mỗi đơn phải lớn hơn hoặc bằng số lượng tối thiểu!");
+            return;
+        }
+        if (totalQuantity < maxPerOrder) {
+            alert("Tổng số lượng vé phải lớn hơn hoặc bằng số lượng tối đa mỗi đơn!");
+            return;
+        }
+        if (!startSaleDate || !endSaleDate) {
+            alert("Vui lòng chọn thời gian bắt đầu và kết thúc bán vé!");
+            return;
+        }
+        if (endSaleDate < startSaleDate) {
+            alert("Thời gian kết thúc bán vé phải sau thời gian bắt đầu!");
+            return;
+        }
+
         const newTicket: TicketType = {
+            ticketId: initialData?.ticketId, // Giữ ticketId nếu có (chế độ chỉnh sửa)
             ticketName,
-            price,
+            price: isFree ? 0 : price,
             isFree,
             totalQuantity,
             minPerOrder,
             maxPerOrder,
-            startSaleDate,
-            endSaleDate,
+            startSaleDate: startSaleDate.toISOString(),
+            endSaleDate: endSaleDate.toISOString(),
             description,
             image,
         };
         onSave(newTicket);
-        setOpen(false); // Close only on save, but this will be overridden by the close button logic
+        setOpen(false);
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setImage(e.target.files[0]);
+            const selectedImage = e.target.files[0];
+            setImage(selectedImage);
+            setImagePreview(URL.createObjectURL(selectedImage));
         }
     };
 
@@ -159,12 +232,12 @@ const TicketForm: React.FC<TicketFormProps> = ({ onSave }) => {
             </div>
             <DialogContent
                 className="bg-gray-900 text-white border-gray-700 max-w-5xl"
-                onPointerDownOutside={(e) => e.preventDefault()} // Prevent closing on outside click
-                onInteractOutside={(e) => e.preventDefault()} // Prevent closing on Escape key
+                onPointerDownOutside={(e) => e.preventDefault()}
+                onInteractOutside={(e) => e.preventDefault()}
             >
                 <DialogHeader className="flex justify-between items-center">
                     <DialogTitle className="text-center flex-1">
-                        Tạo loại vé mới
+                        {initialData ? "Chỉnh sửa loại vé" : "Tạo loại vé mới"}
                     </DialogTitle>
                 </DialogHeader>
                 <div className="p-4">
@@ -349,6 +422,15 @@ const TicketForm: React.FC<TicketFormProps> = ({ onSave }) => {
                                     </p>
                                 )}
                             </div>
+                            {imagePreview && (
+                                <div className="mt-2">
+                                    <img
+                                        src={imagePreview}
+                                        alt="Ticket Preview"
+                                        className="h-16 w-16 object-cover rounded-lg border border-gray-600 mx-auto"
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -359,7 +441,7 @@ const TicketForm: React.FC<TicketFormProps> = ({ onSave }) => {
                         onClick={handleSave}
                         className="bg-green-500 hover:bg-green-600 text-white w-full py-2 rounded-none"
                     >
-                        Lưu
+                        {initialData ? "Cập nhật" : "Lưu"}
                     </Button>
                 </div>
             </DialogContent>

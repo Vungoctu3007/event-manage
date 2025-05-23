@@ -59,12 +59,11 @@ class EventService  implements EventServiceInterface
             throw new ValidationException($validator);
         }
 
-        // Xử lý các trường hình ảnh
         $imageFields = [
-            'logo_url' => 'logo_url',           // Dùng cho event
-            'background_url' => 'banner_url',   // Dùng cho event
-            'organizer_url' => 'organizer_url', // Dùng cho organizer
-            'map_url' => 'background_image',    // Dùng cho seating_map
+            'logo_url' => 'logo_url',          
+            'background_url' => 'banner_url',   
+            'organizer_url' => 'organizer_url', 
+            'map_url' => 'background_image',   
         ];
 
         $uploadedImages = [];
@@ -73,7 +72,6 @@ class EventService  implements EventServiceInterface
             if (isset($data[$inputField]) && $data[$inputField] instanceof \Illuminate\Http\UploadedFile) {
                 Log::info("Processing image field: $inputField");
 
-                // Validate file
                 $validator = validator($data, [
                     $inputField => 'required|image|mimes:jpeg,png,jpg,gif|max:51200',
                 ], [
@@ -114,48 +112,39 @@ class EventService  implements EventServiceInterface
             }
         }
 
-        // Tạo bản ghi trong bảng organizer
         $organizerData = [
             'organization_name' => $data['organization_name'] ?? null,
             'description' => $data['organizer_description'] ?? null,
             'organizer_url' => $uploadedImages['organizer_url'] ?? null,
         ];
 
-        // Log dữ liệu trước khi lưu vào bảng organizer
         Log::info('Organizer data before saving:', $organizerData);
 
         $organizer = Organizer::create($organizerData);
         $data['organizer_id'] = $organizer->organizer_id;
 
-        // Log bản ghi organizer sau khi lưu
         Log::info('Organizer created:', $organizer->toArray());
 
-        // Xóa các trường không cần thiết
         unset($data['organization_name']);
         unset($data['organizer_description']);
 
-        // Tạo bản ghi trong bảng venue
         $venueData = [
             'name' => $data['venue_name'] ?? null,
-            'city' => $data['venue_city'] ?? null,
+            'city' => $data['venue_city'] ?? null, 
             'address' => $data['venue_address'] ?? null,
         ];
 
-        // Log dữ liệu trước khi lưu vào bảng venue
         Log::info('Venue data before saving:', $venueData);
 
         $venue = Venue::create($venueData);
         $data['venue_id'] = $venue->venue_id;
 
-        // Log bản ghi venue sau khi lưu
         Log::info('Venue created:', $venue->toArray());
 
-        // Xóa các trường không cần thiết
         unset($data['venue_name']);
         unset($data['venue_city']);
         unset($data['venue_address']);
 
-        // Thêm các URL hình ảnh vào dữ liệu event
         if (isset($uploadedImages['banner_url'])) {
             $data['banner_url'] = $uploadedImages['banner_url'];
         }
@@ -163,44 +152,36 @@ class EventService  implements EventServiceInterface
             $data['logo_url'] = $uploadedImages['logo_url'];
         }
 
-        // Loại bỏ các trường không có trong bảng event
         unset($data['event_type']);
         unset($data['map_url']);
 
-        // Log dữ liệu sau khi xử lý
         Log::info('Data after processing:', $data);
 
-        // Gọi repository để tạo sự kiện
         $event = $this->eventRepository->create($data);
 
-        // Log sự kiện sau khi tạo
         Log::info('Event created:', $event->toArray());
 
-        // Tạo bản ghi trong bảng seating_map
         if (isset($uploadedImages['background_image'])) {
             $seatingMapData = [
                 'event_id' => $event->event_id,
-                'venue_id' => $data['venue_id'], // Lấy venue_id từ sự kiện
+                'venue_id' => $data['venue_id'],
                 'background_image' => $uploadedImages['background_image'],
-                'map_type' => $data['map_type'] ?? 'fixed', // Giá trị mặc định nếu không cung cấp
-                'configuration' => $data['configuration'] ?? [], // Mảng rỗng nếu không cung cấp
-                'width' => $data['width'] ?? 1370, // Giá trị mặc định dựa trên frontend
-                'height' => $data['height'] ?? 416, // Giá trị mặc định dựa trên frontend
-                'scale_ratio' => $data['scale_ratio'] ?? 1.0, // Giá trị mặc định
+                'map_type' => $data['map_type'] ?? 'fixed', 
+                'configuration' => $data['configuration'] ?? [], 
+                'width' => $data['width'] ?? 1370, 
+                'height' => $data['height'] ?? 416, 
+                'scale_ratio' => $data['scale_ratio'] ?? 1.0, 
             ];
 
-            // Log dữ liệu trước khi lưu vào bảng seating_map
             Log::info('Seating map data before saving:', $seatingMapData);
 
             $seatingMap = SeatingMap::create($seatingMapData);
 
-            // Log bản ghi seating_map sau khi lưu
             Log::info('Seating map created:', $seatingMap->toArray());
         } else {
             Log::warning('No background_image provided for seating_map');
         }
 
-        // Tải quan hệ seating_map nếu tồn tại
         if (isset($uploadedImages['background_image'])) {
             $event->load('seatingMap');
             Log::info('Loaded seating_map relation:', $event->toArray());
@@ -208,7 +189,6 @@ class EventService  implements EventServiceInterface
             Log::info('No seating_map relation loaded due to missing background_image');
         }
 
-        // Log dữ liệu sự kiện cuối cùng
         Log::info('Final event data with relations:', $event->toArray());
 
         return $event;
@@ -219,7 +199,6 @@ class EventService  implements EventServiceInterface
     }
 
 
-    //get list events
     public function getPaginatedEvents(
         int $page = 1,
         int $perPage = 3,
@@ -229,7 +208,6 @@ class EventService  implements EventServiceInterface
     ): LengthAwarePaginator {
         $query = Event::query();
 
-        // Lọc theo trạng thái
         if ($status === 'past') {
             $query->where(function ($q) {
                 $q->where('status', 'cancelled')
@@ -240,22 +218,21 @@ class EventService  implements EventServiceInterface
             });
         } elseif ($status === 'active') {
             $query->where('status', 'active')
-                ->where('end_time', '>=', now()); // Chỉ lấy active và chưa kết thúc
+                ->where('end_time', '>=', now());
         } elseif ($status === 'sold_out') {
             $query->where('status', 'sold_out');
         }
 
-        // Tìm kiếm theo tiêu đề
         if ($search) {
             $query->where('title', 'like', '%' . $search . '%');
         }
 
-        // Sắp xếp
         $query->orderBy($sort);
 
-        // Phân trang
         return $query->paginate($perPage, ['*'], 'page', $page);
     }
-}
 
-//create event info 
+    // creat scheduel event ( creat ticket + time)
+
+  
+}

@@ -19,6 +19,7 @@ class TicketFactory extends Factory
         $saleStart = $this->faker->dateTimeBetween('-1 month', 'now');
         return [
             'schedule_id' => ScheduleEvent::factory(),
+            'ticket_name' => $this->faker->sentence(),
             'ticket_type' => $this->faker->randomElement(['adult', 'child', 'vip', 'student']),
             'price' => $this->faker->randomFloat(2, 10, 500),
             'total_quantity' => $this->faker->numberBetween(50, 1000),

@@ -15,4 +15,9 @@ class ScheduleEventRepository  implements ScheduleEventRepositoryInterface
             ->where('event_id', $eventId)
             ->get();
     }
+
+     public function createScheduleEvent(array $data): ScheduleEvent
+    {
+        return ScheduleEvent::create($data);
+    }
 }

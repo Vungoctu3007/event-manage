@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1\Event;
 
-use App\FormRequest\EventRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Services\Interfaces\EventServiceInterface;
@@ -60,4 +59,8 @@ class EventController extends Controller
             return response()->json(['error' => 'Lỗi khi lấy danh sách sự kiện'], 500);
         }
     }
+
+
+    // create schedule event
+
 }

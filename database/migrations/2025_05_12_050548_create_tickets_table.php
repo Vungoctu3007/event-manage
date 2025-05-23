@@ -11,6 +11,7 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->bigIncrements('ticket_id');
+             $table->string('ticket_name', 100);
             $table->string('ticket_type', 100);
             $table->text('description')->nullable();
             $table->string('image_url')->nullable();
