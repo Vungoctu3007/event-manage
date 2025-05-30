@@ -1,13 +1,13 @@
 // @/types/Ticket.ts
 export interface TicketType {
-    ticketId?: number; // Thêm ticketId (tùy chọn vì chỉ có khi chỉnh sửa)
+    ticketId: string | number | undefined; 
     ticketName: string;
     price: number;
     isFree: boolean;
     totalQuantity: number;
     minPerOrder: number;
     maxPerOrder: number;
-    startSaleDate:string | Date | undefined;
+    startSaleDate: string | Date | undefined;
     endSaleDate: string | Date | undefined;
     description: string;
     image: File | null;

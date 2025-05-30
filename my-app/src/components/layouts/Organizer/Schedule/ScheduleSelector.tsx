@@ -23,7 +23,6 @@ interface ScheduleSelectorProps {
 
 const ScheduleSelector: React.FC<ScheduleSelectorProps> = ({
     ticketForms,
-    selectedSchedule,
     onSelectSchedule,
 }) => {
     return (

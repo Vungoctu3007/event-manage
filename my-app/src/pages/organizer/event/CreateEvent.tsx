@@ -16,7 +16,7 @@ const CreateEvent: React.FC = () => {
     const [completedTabs, setCompletedTabs] = useState<string[]>([]);
     const [eventData, setEventData] = useState<CreateEventData | null>(null);
     const [loading, setLoading] = useState(false);
-    const [isSaved, setIsSaved] = useState(false); // Thêm state để theo dõi trạng thái đã lưu
+    const [isSaved, setIsSaved] = useState(false); 
 
     const { toast } = useToast();
 
@@ -27,7 +27,7 @@ const CreateEvent: React.FC = () => {
             const nextTab = tabOrder[currentIndex + 1];
             setCompletedTabs([...completedTabs, activeTab]);
             setActiveTab(nextTab);
-            setIsSaved(false); // Reset trạng thái đã lưu khi chuyển tab
+            setIsSaved(false); 
         } else if (currentIndex === tabOrder.length - 1) {
             toast({
                 title: "Sự Kiện Đang Chờ Duyệt",

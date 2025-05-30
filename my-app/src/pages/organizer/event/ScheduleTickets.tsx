@@ -1,23 +1,23 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import type { TicketType } from "@/types/Ticket";
-import ScheduleSelector from "@/components/layouts/Organizer/Ticket/ScheduleSelector";
-import ScheduleItem from "@/components/layouts/Organizer/Ticket/ScheduleItem";
+import ScheduleSelector from "@/components/layouts/Organizer/Schedule/ScheduleSelector";
+import ScheduleItem from "@/components/layouts/Organizer/Schedule/ScheduleItem";
 import AddScheduleButton from "@/components/layouts/Organizer/Schedule/AddScheduleButton";
-import TicketList from "@/components/layouts/Organizer/Ticket/TicketList";
-
 
 interface FormState {
     id: number;
     expanded: boolean;
     startDate: Date | null;
     endDate: Date | null;
+    tickets: TicketType[];
 }
 
 const ScheduleTickets: React.FC = () => {
     const [ticketForms, setTicketForms] = useState<FormState[]>([]);
-    const [ticketTypes, setTicketTypes] = useState<TicketType[]>([]);
-    const [selectedSchedule, setSelectedSchedule] = useState<string | null>(null);
+    const [selectedSchedule, setSelectedSchedule] = useState<string | null>(
+        null
+    );
 
     useEffect(() => {
         if (ticketForms.length === 0) {
@@ -27,6 +27,7 @@ const ScheduleTickets: React.FC = () => {
                     expanded: true,
                     startDate: new Date("2025-05-14T07:00:00"),
                     endDate: new Date("2025-05-16T07:07:00"),
+                    tickets: [],
                 },
             ]);
         }
@@ -39,6 +40,7 @@ const ScheduleTickets: React.FC = () => {
                 expanded: true,
                 startDate: new Date("2025-05-14T07:00:00"),
                 endDate: new Date("2025-05-16T07:07:00"),
+                tickets: [],
             },
             ...prev.map((form) => ({ ...form, expanded: false })),
         ]);
@@ -55,26 +57,59 @@ const ScheduleTickets: React.FC = () => {
     }, []);
 
     const handleSaveTicket = useCallback((id: number, ticket: TicketType) => {
-        setTicketTypes((prev) => [...prev, ticket]);
-        removeForm(id);
-    }, [removeForm]);
-
-    const handleDateChange = useCallback((id: number, dateType: "startDate" | "endDate", date: Date | null) => {
         setTicketForms((prev) =>
-            prev.map((f) => (f.id === id ? { ...f, [dateType]: date } : f))
+            prev.map((form) =>
+                form.id === id
+                    ? { ...form, tickets: [...form.tickets, ticket] }
+                    : form
+            )
         );
     }, []);
 
-    const handleEditTicket = useCallback((index: number) => {
-        console.log("Edit ticket at index:", index);
-        // Logic edit (mở form edit với ticket hiện tại)
-    }, []);
+    const handleDateChange = useCallback(
+        (id: number, dateType: "startDate" | "endDate", date: Date | null) => {
+            setTicketForms((prev) =>
+                prev.map((f) => (f.id === id ? { ...f, [dateType]: date } : f))
+            );
+        },
+        []
+    );
 
-    const handleDeleteTicket = useCallback((index: number) => {
-        setTicketTypes((prev) => prev.filter((_, i) => i !== index));
-        console.log("Delete ticket at index:", index);
-        // Logic delete (gọi API xóa ticket)
-    }, []);
+    const handleEditTicket = useCallback(
+        (scheduleId: number, index: number, updatedTicket: TicketType) => {
+            setTicketForms((prev) =>
+                prev.map((form) =>
+                    form.id === scheduleId
+                        ? {
+                              ...form,
+                              tickets: form.tickets.map((ticket, i) =>
+                                  i === index ? updatedTicket : ticket
+                              ),
+                          }
+                        : form
+                )
+            );
+        },
+        []
+    );
+
+    const handleDeleteTicket = useCallback(
+        (scheduleId: number, index: number) => {
+            setTicketForms((prev) =>
+                prev.map((form) =>
+                    form.id === scheduleId
+                        ? {
+                              ...form,
+                              tickets: form.tickets.filter(
+                                  (_, i) => i !== index
+                              ),
+                          }
+                        : form
+                )
+            );
+        },
+        []
+    );
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black py-12 px-4 sm:px-6 lg:px-8">
@@ -92,7 +127,7 @@ const ScheduleTickets: React.FC = () => {
                     />
                 </motion.div>
 
-                <div className="space-y-6">
+                <motion.div layout className="space-y-6 ">
                     {ticketForms.map((form, index) => (
                         <ScheduleItem
                             key={form.id}
@@ -102,17 +137,13 @@ const ScheduleTickets: React.FC = () => {
                             removeForm={removeForm}
                             handleSaveTicket={handleSaveTicket}
                             handleDateChange={handleDateChange}
+                            handleEditTicket={handleEditTicket}
+                            handleDeleteTicket={handleDeleteTicket}
                         />
                     ))}
-                </div>
+                </motion.div>
 
                 <AddScheduleButton onAdd={handleAddNewForm} />
-
-                <TicketList
-                    ticketTypes={ticketTypes}
-                    onEdit={handleEditTicket}
-                    onDelete={handleDeleteTicket}
-                />
             </div>
         </div>
     );
